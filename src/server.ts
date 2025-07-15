@@ -1,8 +1,43 @@
-import Koa from "koa";
-const app = new Koa();
+import express, { Request, Response } from "express";
+import { schema } from "./graphql/schema";
+import {
+  getGraphQLParameters,
+  processRequest,
+  renderGraphiQL,
+  shouldRenderGraphiQL,
+  sendResponseResult
+} from "graphql-helix"
 
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-});
+const app = express();
 
-app.listen(3000);
+app.use(express.json());
+
+app.use("/graphql", async (req: Request, res: Response) => {
+  const request = {
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    query: req.query,
+  };
+
+  if (shouldRenderGraphiQL(request)) {
+    res.type("text/html").send(renderGraphiQL())
+    return
+  }
+
+  const { query, variables, operationName } = getGraphQLParameters(request)
+
+  const result = await processRequest({
+    schema,
+    operationName,
+    query,
+    variables,
+    request
+  })
+
+  if (result.type === "RESPONSE") {
+    sendResponseResult(result, res);
+  }
+})
+
+app.listen(8000);
