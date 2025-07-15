@@ -1,9 +1,21 @@
 {
   "dependencies": {
-    "apollo-server": "^3.13.0",
+    "@graphql-yoga/node": "^3.9.1",
     "bullmq": "^5.56.4",
     "dotenv": "^17.2.0",
     "graphql": "^16.11.0",
-    "ioredis": "^5.6.1"
+    "graphql-helix": "^1.13.0",
+    "ioredis": "^5.6.1",
+    "koa": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
   }
 }
