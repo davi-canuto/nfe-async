@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "apollo-server": "^3.13.0",
+    "bullmq": "^5.56.4",
+    "dotenv": "^17.2.0",
+    "graphql": "^16.11.0",
+    "ioredis": "^5.6.1"
+  }
+}
