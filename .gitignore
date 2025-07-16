@@ -1,2 +1,6 @@
-node_modules/
-!node_modules/path/to/index.js
+node_modules
+build
+npm-debug.log
+dump.rbd
+.env
+.DS_Store
