@@ -2,13 +2,17 @@
   "dependencies": {
     "@graphql-tools/schema": "^10.0.23",
     "@graphql-yoga/node": "^3.9.1",
+    "axios": "^1.10.0",
     "bullmq": "^5.56.4",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
     "graphql-helix": "^1.13.0",
     "ioredis": "^5.6.1",
-    "redis": "^5.6.0"
+    "redis": "^5.6.0",
+    "xml-crypto": "^6.1.2",
+    "xml2js": "^0.6.2",
+    "xmlbuilder": "^15.1.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

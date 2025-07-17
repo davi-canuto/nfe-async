@@ -4,7 +4,7 @@ import { schema } from '../src/graphql/schema'
 import { getGraphQLParameters, processRequest, sendResponseResult } from 'graphql-helix'
 import { nfeQueue } from '../src/queues/nfeQueue'
 import { Worker } from 'bullmq'
-import { connection, redisClient } from '../src/queues/connection'
+import { connection } from '../src/queues/connection'
 
 let app: express.Express
 let server: any
@@ -44,7 +44,6 @@ afterAll(async () => {
   await worker.close()
   await server.close()
   await nfeQueue.close()
-  await redisClient.quit()
 })
 
 beforeEach(async () => {

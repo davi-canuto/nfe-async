@@ -2,5 +2,12 @@ node_modules
 build
 npm-debug.log
 dump.rbd
+/dump.rbd
+
 .env
+/.env
 .DS_Store
+
+/private.pem
+/public.pem
+/mycert.pfx
