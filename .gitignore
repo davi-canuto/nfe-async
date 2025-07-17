@@ -11,3 +11,4 @@ dump.rbd
 /private.pem
 /public.pem
 /mycert.pfx
+/mycert.pem
