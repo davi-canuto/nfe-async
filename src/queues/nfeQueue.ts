@@ -1,4 +1,4 @@
 import { Queue } from 'bullmq'
-import { connection } from './connection'
+import { connection } from './bullmq'
 
-export const nfeQueue = new Queue('nfe-async', { connection })
+export const nfeQueue = new Queue('emit-nfe', { connection })
