@@ -12,3 +12,8 @@ dump.rbd
 /public.pem
 /mycert.pfx
 /mycert.pem
+/cert.pfx
+/cert.pem
+/private-key.pem
+
+.tool-versions
