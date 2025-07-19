@@ -1,4 +1,4 @@
-import { nfeQueue } from "../queues/nfeQueue"
+import { nfeQueue } from "../services/bullmq"
 
 export const resolvers = {
   Query: {

@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import { schema } from "./graphql/schema";
+import express, { Request, Response } from "express"
+import { schema } from "./graphql/schema"
 import {
   getGraphQLParameters,
   processRequest,
@@ -8,9 +8,9 @@ import {
   sendResponseResult
 } from "graphql-helix"
 
-const app = express();
+const app = express()
 
-app.use(express.json());
+app.use(express.json())
 
 app.use("/graphql", async (req: Request, res: Response) => {
   const request = {
@@ -18,7 +18,7 @@ app.use("/graphql", async (req: Request, res: Response) => {
     headers: req.headers,
     method: req.method,
     query: req.query,
-  };
+  }
 
   if (shouldRenderGraphiQL(request)) {
     res.type("text/html").send(renderGraphiQL())
@@ -36,8 +36,8 @@ app.use("/graphql", async (req: Request, res: Response) => {
   })
 
   if (result.type === "RESPONSE") {
-    sendResponseResult(result, res);
+    sendResponseResult(result, res)
   }
 })
 
-app.listen(8000);
+app.listen(8000)

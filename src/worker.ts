@@ -1,5 +1,5 @@
 import { Worker } from 'bullmq'
-import { connection } from './queues/bullmq'
-import { processNFe } from './services/nfeService'
+import { redisConfig } from './services/bullmq'
+import { processNFe } from './services/nfe'
 
-new Worker('emit-nfe', async (job) => processNFe(job.data), { connection })
+new Worker('emit-nfe', async (job) => processNFe(job.data), { connection: redisConfig })

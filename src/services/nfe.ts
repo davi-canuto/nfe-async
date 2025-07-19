@@ -1,6 +1,5 @@
-import { NFe } from "../types/nfe";
+import { NFe } from "../types/nfe"
 import { connectMongo, getMongo } from '../database/mongo'
-import { saveNFeLog } from '../handlers/nfeHandler'
 
 export async function processNFe(options: NFe) {
   try {
@@ -14,4 +13,23 @@ export async function processNFe(options: NFe) {
     console.error('error on process NF-e:', e)
     return { success: false, error: (e as Error).message }
   }
+}
+
+// methods
+
+async function saveNFeLog(options: NFe, status = 'PROCESSING') {
+  const db = getMongo()
+  const collection = db.collection('nfe_logs')
+
+  const result = await collection.insertOne({
+    created_at: new Date(),
+    status,
+    payload: options
+  })
+
+  return result.insertedId
+}
+
+async function updateNFeLog(id: number, status: string) {
+  return
 }

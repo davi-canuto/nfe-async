@@ -1,8 +1,8 @@
 node_modules
 build
 npm-debug.log
-dump.rbd
-/dump.rbd
+dump.rdb
+/dump.rdb
 
 .env
 /.env
