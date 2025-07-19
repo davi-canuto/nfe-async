@@ -10,11 +10,10 @@ export async function processNFe(options: NFe) {
     await connectMongo()
     const insertedId = await saveNFeLog(options, 'PROCESSING')
 
-    const emitentUF = options.emitente.enderEmit.UF
-    const url = getSefazWsdl(emitentUF, 'NFeAutorizacao');
+    // const emitentUF = options.emitente.enderEmit.UF
+    // const url = getSefazWsdl(emitentUF, 'NFeAutorizacao');
 
     console.log('NF-e registered with ID:', insertedId)
-    console.log(buildNFeXml(options))
 
     return { success: true, insertedId }
   } catch (e) {
