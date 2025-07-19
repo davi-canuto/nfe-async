@@ -1,4 +1,5 @@
 import { Worker } from 'bullmq'
-import { processNfe } from './services/nfeService'
+import { connection } from './queues/bullmq'
+import { processNFe } from './services/nfeService'
 
-new Worker('nfe-async', async (job) => processNfe(job.data))
+new Worker('emit-nfe', async (job) => processNFe(job.data), { connection })

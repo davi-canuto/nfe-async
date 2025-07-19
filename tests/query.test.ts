@@ -52,12 +52,12 @@ beforeEach(async () => {
 
 describe('jobStatus query', () => {
   it('returns waiting or completed after enqueue', async () => {
-    var query = `mutation($cnpj: String!, $value: Float!){ enqueueNfe(cnpj:$cnpj, value:$value) }`
+    var query = `mutation($cnpj: String!, $value: Float!){ enqueueNFe(cnpj:$cnpj, value:$value) }`
     var variables = { cnpj: '12345678000100', value: 200.5 }
     var res = await request(app).post('/graphql').send({ query, variables })
 
     expect(res.status).toBe(200)
-    var jobId = res.body.data.enqueueNfe
+    var jobId = res.body.data.enqueueNFe
 
     expect(jobId).toBeDefined()
 

@@ -1,14 +1,15 @@
-export default {
-  generateXml(data: any): string {
-    return `<xml>Dados da Nfe: ${JSON.stringify(data)}</xml>`;
-  },
+import { getMongo } from '../database/mongo'
+import { NFe } from '../types/nfe'
 
-  signXml(xml: string): string {
-    return xml + '<Signed/>';
-  },
+export async function saveNFeLog(options: NFe, status = 'PROCESSING') {
+  const db = getMongo()
+  const collection = db.collection('nfe_logs')
 
-  async sendNfe(signedXml: string): Promise<any> {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { status: "authorized", protocolId: "x" };
-  }
+  const result = await collection.insertOne({
+    created_at: new Date(),
+    status,
+    payload: options
+  })
+
+  return result.insertedId
 }

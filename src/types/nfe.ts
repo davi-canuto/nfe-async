@@ -1,4 +1,6 @@
 export interface NFe {
+  cnpj: string,
+  value: number,
   identificacao: {
     cUF: string;
     natOp: string;

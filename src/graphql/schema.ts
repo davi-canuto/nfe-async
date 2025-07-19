@@ -7,7 +7,7 @@ const typeDefs = `
   }
 
   type Mutation {
-    enqueueNfe(cnpj: String!, value: Float!): String
+    enqueueNFe(cnpj: String!, value: Float!): String
   }
 `
 
