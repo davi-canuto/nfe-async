@@ -1,3 +1,5 @@
+export type UF = 'RS' | 'SP' | 'PR' | 'SC'
+
 export interface NFe {
   cnpj: string,
   value: number,

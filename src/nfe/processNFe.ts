@@ -10,7 +10,8 @@ export async function processNFe(options: NFe) {
     await connectMongo()
     const insertedId = await saveNFeLog(options, 'PROCESSING')
 
-    const status = await getStatusService()
+    const status = await getStatusService("RS")
+    // 43 for RS, need hash for state=>code
 
     console.log("Resposta da SEFAZ:", status)
     console.log('NF-e registered with ID:', insertedId)
