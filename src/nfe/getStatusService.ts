@@ -31,11 +31,7 @@ export async function getStatusService(uf: UF): Promise<string> {
     const url = getSefazWsdl("RS", 'NfeStatusServico')
     if (!url) throw new Error("missing wsdl url")
 
-    const { data } = await api.post(url, soapEnvelope, {
-      headers: {
-        'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF',
-      },
-    })
+    const data = await api(url, soapEnvelope, 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF')
 
     const parsedData = parser.parse(data)
     const status = parsedData['soap:Envelope']['soap:Body']['nfeResultMsg']['retConsStatServ']["cStat"]

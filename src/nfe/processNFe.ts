@@ -11,10 +11,9 @@ export async function processNFe(options: NFe) {
     const insertedId = await saveNFeLog(options, 'PROCESSING')
 
     const status = await getStatusService("RS")
-    // 43 for RS, need hash for state=>code
 
-    console.log("Resposta da SEFAZ:", status)
-    console.log('NF-e registered with ID:', insertedId)
+    console.log(status)
+    if (status === "reject") throw "Sefaz service is down for your UF"
 
     return { success: true, id: insertedId }
   } catch (e) {

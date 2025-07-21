@@ -11,6 +11,7 @@
     "graphql-helix": "^1.13.0",
     "ioredis": "^5.6.1",
     "mongodb": "^6.17.0",
+    "node-fetch": "^3.3.2",
     "redis": "^5.6.0",
     "xml-crypto": "^6.1.2",
     "xml2js": "^0.6.2",
