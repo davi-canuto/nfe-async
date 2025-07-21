@@ -1,28 +1,23 @@
-import { Builder } from "xml2js"
 import { NFe } from "../types/nfe"
 import { connectMongo } from '../database/mongo'
 
 import { saveNFeLog } from './trackingNFe'
-import { getSefazWsdl } from "./getSefazWsdl"
+// import { authorizeNFe } from './authorizeNFe'
+import { getStatusService } from './getStatusService'
 
 export async function processNFe(options: NFe) {
   try {
     await connectMongo()
     const insertedId = await saveNFeLog(options, 'PROCESSING')
 
-    // const emitentUF = options.emitente.enderEmit.UF
-    // const url = getSefazWsdl(emitentUF, 'NFeAutorizacao');
+    const status = await getStatusService()
 
+    console.log("Resposta da SEFAZ:", status)
     console.log('NF-e registered with ID:', insertedId)
 
-    return { success: true, insertedId }
+    return { success: true, id: insertedId }
   } catch (e) {
     console.error('error on process NF-e:', e)
     return { success: false, error: (e as Error).message }
   }
-}
-
-export function buildNFeXml(data: NFe): string {
-  const builder = new Builder({ headless: true })
-  return builder.buildObject({ NFe: data })
 }

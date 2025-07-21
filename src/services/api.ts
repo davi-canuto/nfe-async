@@ -1,10 +1,20 @@
 import axios from 'axios'
 import https from 'https'
 import fs from 'fs'
+import dotenv from "dotenv"
+
+dotenv.config()
+
+const certPath = process.env.CERT_PATH
+const keyPath = process.env.KEY_PATH
+
+if (!certPath || !keyPath) {
+  throw new Error("CERT_PATH or KEY_PATH not defineds in .env")
+}
 
 const httpsAgent = new https.Agent({
-  cert: fs.readFileSync(process.env.CERT_PATH || '', 'utf-8'),
-  key: fs.readFileSync(process.env.KEY_PATH || '', 'utf-8'),
+  cert: fs.readFileSync(certPath || '', 'utf-8'),
+  key: fs.readFileSync(keyPath || '', 'utf-8'),
   rejectUnauthorized: false
 })
 
