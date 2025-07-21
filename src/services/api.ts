@@ -23,7 +23,7 @@ export async function api(url: string, xml: string, soapAction: string) {
     method: 'POST',
     body: xml,
     headers: { 
-      'Content-Type': 'text/xml; charset=utf-8',
+      'Content-Type': 'application/soap+xml; charset=utf-8',
       'SOAPAction': soapAction
     },
     agent

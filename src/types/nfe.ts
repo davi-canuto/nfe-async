@@ -1,4 +1,6 @@
-export type UF = 'RS' | 'SP' | 'PR' | 'SC'
+export type UF =
+  | 'AM' | 'BA' | 'CE' | 'GO' | 'MA' | 'PA'
+  | 'PE' | 'PI' | 'PR' | 'RN' | 'RR' | 'SE' | 'TO';
 
 export interface NFeInput {
   cnpj: string
@@ -26,3 +28,19 @@ export interface NFeInput {
     qCom: number
   }>
 }
+
+export const ufToCUF: Record<UF, number> = {
+  AM: 13,
+  BA: 29,
+  CE: 23,
+  GO: 52,
+  MA: 21,
+  PA: 15,
+  PE: 26,
+  PI: 22,
+  PR: 41,
+  RN: 24,
+  RR: 14,
+  SE: 28,
+  TO: 17
+};

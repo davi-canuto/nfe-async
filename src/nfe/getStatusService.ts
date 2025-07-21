@@ -1,18 +1,18 @@
 import { api } from "../services/api"
-import { UF } from "../types/nfe"
+import { UF, ufToCUF } from "../types/nfe"
 import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 
 const builder = new XMLBuilder({ ignoreAttributes: false })
 const parser = new XMLParser({ ignoreAttributes: false });
 
-const WSDL = 'https://www.sefazvirtual.fazenda.gov.br/NFeStatusServico4/NFeStatusServico4.asmx'
+const WSDL = 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico4.asmx'
 
-function jsonBody(cUF: 91, tpAmb = 1, xServ = 'STATUS') {
+function jsonBody(cUF: number, tpAmb = 2, xServ = 'STATUS') {
   return {
     consStatServ: {
       '@_versao': '4.00',
       '@_xmlns': 'http://www.portalfiscal.inf.br/nfe',
-      tpAmb, // 1 for homolog, 2 for production
+      tpAmb,
       cUF,
       xServ,
     }
@@ -21,7 +21,7 @@ function jsonBody(cUF: 91, tpAmb = 1, xServ = 'STATUS') {
 
 export async function getStatusService(uf: UF): Promise<number> {
   try {
-    const xmlBody = builder.build(jsonBody)
+    const xmlBody = builder.build(jsonBody(ufToCUF[uf]))
     const soapEnvelope = getSoapEnvelope(
       "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
       xmlBody
@@ -41,15 +41,14 @@ export async function getStatusService(uf: UF): Promise<number> {
     throw e
   }
 }
-
 export function getSoapEnvelope(xmlnsUrl: string, xmlBody: string): string {
   return `<?xml version="1.0" encoding="utf-8"?>
-          <soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
-                          xmlns:nfe="${xmlnsUrl}">
-            <soap12:Body>
-              <nfe:nfeDadosMsg>
-                ${xmlBody}
-              </nfe:nfeDadosMsg>
-            </soap12:Body>
-          </soap12:Envelope>`
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
+                 xmlns:nfe="${xmlnsUrl}">
+  <soap12:Body>
+    <nfe:nfeDadosMsg>
+${xmlBody}
+    </nfe:nfeDadosMsg>
+  </soap12:Body>
+</soap12:Envelope>`;
 }
