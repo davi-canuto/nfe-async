@@ -8,7 +8,7 @@ import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 const builder = new XMLBuilder({ ignoreAttributes: false })
 const parser = new XMLParser({ ignoreAttributes: false });
 
-function generateStatusServiceBodyJson(cUF: number, tpAmb = 1, xServ = 'STATUS') {
+function jsonBody(cUF: number, tpAmb = 1, xServ = 'STATUS') {
   return {
     consStatServ: {
       '@_versao': '4.00',
@@ -20,15 +20,14 @@ function generateStatusServiceBodyJson(cUF: number, tpAmb = 1, xServ = 'STATUS')
   }
 }
 
-export async function getStatusService(uf: UF): Promise<string> {
+export async function getStatusService(uf: UF): Promise<number> {
   try {
-    const bodyJson = generateStatusServiceBodyJson(getUfCode(uf))
     const soapEnvelope = getSoapEnvelope(
       "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
-      builder.build(bodyJson)
+      builder.build(jsonBody(getUfCode(uf)))
     )
 
-    const url = getSefazWsdl("RS", 'NfeStatusServico')
+    const url = getSefazWsdl(uf, 'NfeStatusServico')
     if (!url) throw new Error("missing wsdl url")
 
     const data = await api(url, soapEnvelope, 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF')

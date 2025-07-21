@@ -5,6 +5,13 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+const certPath = process.env.CERT_PATH
+const keyPath = process.env.KEY_PATH
+
+if (!certPath || !keyPath) {
+  throw new Error("CERT_PATH or KEY_PATH not defined in .env")
+}
+
 const agent = new https.Agent({
   cert: fs.readFileSync(process.env.CERT_PATH!, 'utf-8'),
   key: fs.readFileSync(process.env.KEY_PATH!, 'utf-8'),
@@ -24,7 +31,7 @@ export async function api(url: string, xml: string, soapAction: string) {
 
   if (!response.ok) {
     const errorText = await response.text()
-    throw new Error(`Erro SEFAZ: ${response.status} ${errorText}`)
+    throw new Error(`code: ${response.status} \n response: ${errorText}`)
   }
 
   return response.text()

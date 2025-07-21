@@ -6,11 +6,36 @@ const typeDefs = `
     jobStatus(jobId: String!): String
   }
 
-  type Mutation {
+   type Mutation {
     enqueueNFe(
-      cnpj: String!, 
-      value: Float!,
+      cnpj: String!
+      emitente: EmitenteInput!
+      destinatario: DestinatarioInput!
+      produtos: [ProdutoInput!]!
+      valorTotal: Float!
     ): String
+  }
+
+  input EmitenteInput {
+    cnpj: String!
+    xNome: String!
+    IE: String!
+    UF: String!
+  }
+
+  input DestinatarioInput {
+    cpfCnpj: String!
+    xNome: String!
+    UF: String!
+  }
+
+  input ProdutoInput {
+    xProd: String!
+    vProd: Float!
+    NCM: String!
+    CFOP: String!
+    uCom: String!
+    qCom: Float!
   }
 `
 

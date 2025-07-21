@@ -1,4 +1,5 @@
 import { nfeQueue } from "../services/bullmq"
+import { NFeInput } from "../types/nfe"
 
 export const resolvers = {
   Query: {
@@ -9,8 +10,8 @@ export const resolvers = {
     }
   },
   Mutation: {
-    enqueueNFe: async (_: any, { cnpj, value }: { cnpj: string, value: number }) => {
-      const job = await nfeQueue.add('emit-nfe', { cnpj, value })
+    enqueueNFe: async (_: any, args: NFeInput) => {
+      const job = await nfeQueue.add('emit-nfe', args)
       return job.id
     }
   }

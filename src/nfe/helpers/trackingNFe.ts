@@ -1,7 +1,7 @@
 import { getMongo } from '../../database/mongo'
-import { NFe } from '../../types/nfe'
+import { NFeInput } from '../../types/nfe'
 
-export async function saveNFeLog(options: NFe, status = 'PROCESSING') {
+export async function saveNFeLog(options: NFeInput, status = 'PROCESSING') {
   const db = getMongo()
   const collection = db.collection('nfe_logs')
 
