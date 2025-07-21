@@ -1,31 +1,43 @@
 import { api } from "../services/api"
 import { getSefazWsdl } from "./getSefazWsdl"
+import { XMLBuilder } from 'fast-xml-parser'
+
+const builder = new XMLBuilder({ ignoreAttributes: false })
+
+function generateStatusServiceBodyJson(tpAmb: number, cUF: number, xServ = 'STATUS') {
+  return {
+    consStatServ: {
+      '@_versao': '4.00',
+      '@_xmlns': 'http://www.portalfiscal.inf.br/nfe',
+      tpAmb,
+      cUF,
+      xServ,
+    }
+  }
+}
+
+function generateSoapEnvelope(xmlBody: string): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+          <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+                        xmlns:nfe="http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4">
+            <soap:Body>
+              <nfe:nfeDadosMsg>${xmlBody}</nfe:nfeDadosMsg>
+            </soap:Body>
+          </soap:Envelope>`
+}
 
 export async function getStatusService(): Promise<string> {
-  const soapEnvelope = `
-  <soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:nfe="http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4">
-    <tpAmb>1</tpAmb>
-    <cUF>35</cUF>
-    <xServ>STATUS</xServ>
-  </soap12:Envelope>
-  `.trim()
+  const bodyJson = generateStatusServiceBodyJson(1, 43)
+  const soapEnvelope = generateSoapEnvelope(builder.build(bodyJson))
 
-  try {
-    const url = getSefazWsdl("SP", 'NfeStatusServico')
+  const url = getSefazWsdl("RS", 'NfeStatusServico')
+  if (!url) throw new Error("missing wsdl url")
 
-    if (url === null) {
-      throw "missing wsdl url"
-    }
+  const { data } = await api.post(url, soapEnvelope, {
+    headers: {
+      'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF',
+    },
+  })
 
-    const { data } = await api.post(url, soapEnvelope, {
-      headers: {
-        'Content-Type': 'application/soap+xml; charset=utf-8',
-      }
-    })
-
-    return data
-  } catch (error) {
-    console.error("erro to connect with SEFAZ:", error)
-    throw error
-  }
+  return data
 }

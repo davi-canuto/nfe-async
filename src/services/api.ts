@@ -22,6 +22,6 @@ export const api = axios.create({
   httpsAgent,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/soap+xml; charset=utf-8',
+    'Content-Type': 'text/xml; charset=utf-8'
   }
 })
