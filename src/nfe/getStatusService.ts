@@ -3,9 +3,10 @@ import { UF } from "../types/nfe"
 import { getSefazWsdl } from "./helpers/getSefazWsdl"
 import { getSoapEnvelope } from "./helpers/getSoapEnvelope"
 import { getUfCode } from "./helpers/getUfCode"
-import { XMLBuilder } from 'fast-xml-parser'
+import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 
 const builder = new XMLBuilder({ ignoreAttributes: false })
+const parser = new XMLParser({ ignoreAttributes: false });
 
 function generateStatusServiceBodyJson(cUF: number, tpAmb = 1, xServ = 'STATUS') {
   return {
@@ -20,20 +21,27 @@ function generateStatusServiceBodyJson(cUF: number, tpAmb = 1, xServ = 'STATUS')
 }
 
 export async function getStatusService(uf: UF): Promise<string> {
-  const bodyJson = generateStatusServiceBodyJson(getUfCode(uf))
-  const soapEnvelope = getSoapEnvelope(
-    "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
-    builder.build(bodyJson)
-  )
+  try {
+    const bodyJson = generateStatusServiceBodyJson(getUfCode(uf))
+    const soapEnvelope = getSoapEnvelope(
+      "http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4",
+      builder.build(bodyJson)
+    )
 
-  const url = getSefazWsdl("RS", 'NfeStatusServico')
-  if (!url) throw new Error("missing wsdl url")
+    const url = getSefazWsdl("RS", 'NfeStatusServico')
+    if (!url) throw new Error("missing wsdl url")
 
-  const { data } = await api.post(url, soapEnvelope, {
-    headers: {
-      'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF',
-    },
-  })
+    const { data } = await api.post(url, soapEnvelope, {
+      headers: {
+        'SOAPAction': 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF',
+      },
+    })
 
-  return data
+    const parsedData = parser.parse(data)
+    const status = parsedData['soap:Envelope']['soap:Body']['nfeResultMsg']['retConsStatServ']["cStat"]
+
+    return status
+  } catch (e) {
+    throw e
+  }
 }
