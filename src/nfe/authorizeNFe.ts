@@ -1,11 +1,9 @@
 import { api } from "../services/api"
 import { NFeInput } from "../types/nfe"
-import { getSefazWsdl } from "./helpers/getSefazWsdl"
-import { getSoapEnvelope } from "./helpers/getSoapEnvelope"
 import { XMLBuilder } from 'fast-xml-parser'
-import { getUfCode } from "./helpers/getUfCode"
 
 const builder = new XMLBuilder({ ignoreAttributes: false })
+const WSDL = 'https://www.sefazvirtual.fazenda.gov.br/NFeAutorizacao4/NFeAutorizacao4.asmx'
 
 function jsonBody(input: NFeInput) {
   const { emitente, destinatario, produtos, valorTotal } = input
@@ -21,7 +19,7 @@ function jsonBody(input: NFeInput) {
           '@_versao': '4.00',
           '@_Id': 'NFe0000000000000001',
           ide: {
-            cUF: getUfCode(emitente.UF),
+            cUF: 91,
             natOp: 'VENDA',
             mod: '55',
             serie: '1',
@@ -105,10 +103,23 @@ export async function authorizeNFe(): Promise<string> {
     builder.build(jsonBody)
   )
 
-  const url = getSefazWsdl("SP", 'NfeStatusServico')
-  if (!url) throw new Error("missing wsdl url")
-
-  const data = await api(url, soapEnvelope, 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4/nfeAutorizacaoLote')
+  const data = await api(
+    WSDL, 
+    soapEnvelope, 
+    'http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4/nfeAutorizacaoLote'
+  )
 
   return data
+}
+
+export function getSoapEnvelope(xmlnsUrl: string, xmlBody: string): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+          <soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
+                          xmlns:nfe="${xmlnsUrl}">
+            <soap12:Body>
+              <nfe:nfeDadosMsg>
+                ${xmlBody}
+              </nfe:nfeDadosMsg>
+            </soap12:Body>
+          </soap12:Envelope>`
 }
