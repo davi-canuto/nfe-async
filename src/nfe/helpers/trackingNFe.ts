@@ -1,5 +1,5 @@
-import { getMongo } from '../database/mongo'
-import { NFe } from '../types/nfe'
+import { getMongo } from '../../database/mongo'
+import { NFe } from '../../types/nfe'
 
 export async function saveNFeLog(options: NFe, status = 'PROCESSING') {
   const db = getMongo()

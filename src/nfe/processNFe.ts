@@ -1,7 +1,7 @@
 import { NFe } from "../types/nfe"
 import { connectMongo } from '../database/mongo'
 
-import { saveNFeLog } from './trackingNFe'
+import { saveNFeLog } from './helpers/trackingNFe'
 // import { authorizeNFe } from './authorizeNFe'
 import { getStatusService } from './getStatusService'
 
