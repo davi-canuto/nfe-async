@@ -1,39 +1,39 @@
-import { api } from "../services/api"
 import { NFeInput } from "../types/nfe"
-import { XMLBuilder } from 'fast-xml-parser'
-import { buildNFe } from "./helpers/buildNFe"
-import { signXML } from "./helpers/signXML"
+import { api } from "../services/api"
+import { signInfNFe } from "./helpers/signXML"
+import { generateInfNFe } from "./helpers/generateNFe"
 
-const builder = new XMLBuilder({ ignoreAttributes: false, format: false })
 const WSDL = 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao4.asmx'
+const NAMESPACE = 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4'
 
 export async function authorizeNFe(input: NFeInput): Promise<string> {
-  const signedXmlBody = signXML(buildNFe(input))
+  const infNFeXml = generateInfNFe(input)
+  const signature = signInfNFe(infNFeXml)
 
-  console.log(signedXmlBody)
-  const soapEnvelope = getSoapEnvelope(
-    "http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4",
-    signedXmlBody
-  )
-  console.log(soapEnvelope)
+  const nfeXml = `<NFe xmlns="http://www.portalfiscal.inf.br/nfe">${infNFeXml}${signature}</NFe>`
 
-  const data = await api(
+  const enviNFeXml = `<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <idLote>000000001</idLote>
+    <indSinc>1</indSinc>
+    ${nfeXml}
+  </enviNFe>`.replace(/>\s+</g, '><').trim();
+
+  const soapEnvelope = buildSoapEnvelope(NAMESPACE, enviNFeXml)
+
+  const response = await api(
     WSDL,
     soapEnvelope,
-    'http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4/nfeAutorizacaoLote'
+    `${NAMESPACE}/nfeAutorizacaoLote`
   )
 
-  return data
+  return response
 }
 
-export function getSoapEnvelope(xmlnsUrl: string, xmlBody: string): string {
+function buildSoapEnvelope(namespace: string, xmlBody: string): string {
   return `<?xml version="1.0" encoding="utf-8"?>
-          <soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"
-                          xmlns:nfe="${xmlnsUrl}">
-            <soap12:Body>
-              <nfe:nfeDadosMsg>
-                ${xmlBody}
-              </nfe:nfeDadosMsg>
-            </soap12:Body>
-          </soap12:Envelope>`
+<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:nfe="${namespace}">
+  <soap12:Body>
+    <nfe:nfeDadosMsg>${xmlBody}</nfe:nfeDadosMsg>
+  </soap12:Body>
+</soap12:Envelope>`
 }

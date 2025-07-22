@@ -10,8 +10,8 @@ export const resolvers = {
     }
   },
   Mutation: {
-    enqueueNFe: async (_: any, args: NFeInput) => {
-      const job = await nfeQueue.add('emit-nfe', args)
+    enqueueNFe: async (_: any, args: any) => {
+      const job = await nfeQueue.add('emit-nfe', args.input)
       return job.id
     }
   }

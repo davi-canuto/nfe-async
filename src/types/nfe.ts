@@ -3,30 +3,72 @@ export type UF =
   | 'PE' | 'PI' | 'PR' | 'RN' | 'RR' | 'SE' | 'TO';
 
 export interface NFeInput {
-  cnpj: string
-  valorTotal: number
-
   emitente: {
-    cnpj: string
+    CNPJ: string
     xNome: string
     IE: string
-    UF: UF
+    CRT: string
+
+    enderEmit: {
+      xLgr: string
+      nro: string
+      xBairro: string
+      cMun: string
+      xMun: string
+      UF: UF
+      CEP: string
+      cPais: string
+      xPais: string
+    }
   }
 
   destinatario: {
-    cpfCnpj: string
+    CNPJ: string
     xNome: string
-    UF: UF
+    enderDest: {
+      xLgr: string
+      nro: string
+      xBairro: string
+      cMun: string
+      xMun: string
+      UF: string
+      CEP: string
+      cPais: string
+      xPais: string
+    }
+    indIEDest: string
   }
 
   produtos: Array<{
+    cProd: string
+    cEAN: string
     xProd: string
-    vProd: number
     NCM: string
     CFOP: string
     uCom: string
-    qCom: number
+    qCom: string
+    vUnCom: string
+    vProd: string
+    cEANTrib: string
+    uTrib: string
+    qTrib: string
+    vUnTrib: string
+    indTot: string
+    vBC: string
+    pICMS: string
+    vICMS: string
+    pPIS: string
+    vPIS: string
+    pCOFINS: string
+    vCOFINS: string
   }>
+
+  total: {
+    vBC: string
+    vICMS: string
+    vProd: string
+    vNF: string
+  }
 }
 
 export const ufToCUF: Record<UF, number> = {

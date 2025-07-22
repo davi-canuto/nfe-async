@@ -10,7 +10,7 @@ export async function processNFe(options: NFeInput) {
     await connectMongo()
     const insertedId = await saveNFeLog(options, 'PROCESSING')
 
-    const uf: UF = options.emitente.UF
+    const uf: UF = options.emitente.enderEmit.UF
 
     const status = await getStatusService(uf)
 
