@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,8 +32,16 @@ public class CertificateConfig {
             keyStore.load(fis, keyStorePassword.toCharArray());
         }
 
+        if (!keyStore.containsAlias(keyAlias)) {
+            throw new IllegalArgumentException("Alias '" + keyAlias + "' não encontrado no KeyStore");
+        }
+
         PrivateKey privateKey = (PrivateKey) keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
         X509Certificate certificate = (X509Certificate) keyStore.getCertificate(keyAlias);
+
+        if (privateKey == null || certificate == null) {
+            throw new IllegalStateException("Erro ao carregar chave privada ou certificado do alias: " + keyAlias);
+        }
 
         return new Iso20022XmlSigner(privateKey, certificate);
     }
