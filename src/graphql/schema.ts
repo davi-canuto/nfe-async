@@ -63,7 +63,6 @@ const typeDefs = `
 
   input DestinatarioInput {
     CNPJ: String!
-    xNome: String!
     enderDest: EnderecoInput!
     indIEDest: String!
   }

@@ -24,7 +24,6 @@ export interface NFeInput {
 
   destinatario: {
     CNPJ: string
-    xNome: string
     enderDest: {
       xLgr: string
       nro: string
@@ -85,4 +84,4 @@ export const ufToCUF: Record<UF, number> = {
   RR: 14,
   SE: 28,
   TO: 17
-};
+}

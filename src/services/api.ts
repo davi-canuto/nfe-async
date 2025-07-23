@@ -18,18 +18,19 @@ const agent = new https.Agent({
   rejectUnauthorized: false
 })
 
-export async function api(url: string, xml: string, soapAction: string) {
+export async function post(url: string, xml: string, soapAction: string, contentType = 'application/soap+xml; charset=utf-8') {
   const response = await fetch(url, {
     method: 'POST',
     body: xml,
     headers: { 
-      'Content-Type': 'application/soap+xml; charset=utf-8',
+      'Content-Type': contentType,
       'SOAPAction': soapAction
     },
     agent
   })
 
   if (!response.ok) {
+    console.log(response)
     const errorText = await response.text()
     throw new Error(`code: ${response.status} \n response: ${errorText}`)
   }

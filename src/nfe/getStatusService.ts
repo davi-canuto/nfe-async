@@ -1,4 +1,4 @@
-import { api } from "../services/api"
+import { post } from "../services/api"
 import { UF, ufToCUF } from "../types/nfe"
 import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 
@@ -27,7 +27,7 @@ export async function getStatusService(uf: UF): Promise<number> {
       xmlBody
     )
 
-    const data = await api(
+    const data = await post(
       WSDL, 
       soapEnvelope, 
       'http://www.portalfiscal.inf.br/nfe/wsdl/NFeStatusServico4/nfeStatusServicoNF'
