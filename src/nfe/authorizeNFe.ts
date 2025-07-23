@@ -9,20 +9,14 @@ const NAMESPACE = 'http://www.portalfiscal.inf.br/nfe/wsdl/NFeAutorizacao4'
 export async function authorizeNFe(input: NFeInput): Promise<string> {
   const infNFeXml = generateInfNFe(input)
 
-  const nfeXml = `<NFe xmlns="http://www.portalfiscal.inf.br/nfe">${infNFeXml}</NFe>`
-
   const enviNFeXml = `<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
     <idLote>000000001</idLote>
     <indSinc>1</indSinc>
-    ${nfeXml}
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">${infNFeXml}</NFe>
   </enviNFe>`.replace(/>\s+</g, '><').trim();
 
   const signedXML = await signXML(enviNFeXml)
-
-  console.log(signedXML)
-
   const soapEnvelope = buildSoapEnvelope(NAMESPACE, signedXML)
-
   const response = await post(
     WSDL,
     soapEnvelope,

@@ -6,12 +6,14 @@ export function generateInfNFe(input: NFeInput): string {
   const dhEmi = '2025-07-22T09:00:00-03:00'
   const tpEmis = '1'
 
-  const infNFeId = buildChaveAcesso(input, dhEmi, nNF, cNF, tpEmis)
+  const infNFeId = buildAcessKey(input, dhEmi, nNF, cNF, tpEmis)
   const dv = infNFeId.slice(-1)
 
   const totalProd = input.produtos.reduce((sum, p) => sum + Number(p.vProd), 0).toFixed(2)
   const totalBC = input.produtos.reduce((sum, p) => sum + Number(p.vBC), 0).toFixed(2)
   const totalICMS = input.produtos.reduce((sum, p) => sum + Number(p.vICMS), 0).toFixed(2)
+
+  const cUF = ufToCUF[input.emitente.enderEmit.UF]
 
   const produtosXml = input.produtos.map((p, index) => `
     <det nItem="${index + 1}">
@@ -68,7 +70,7 @@ export function generateInfNFe(input: NFeInput): string {
 
   return `<infNFe Id="${infNFeId}" versao="4.00">
     <ide>
-      <cUF>24</cUF>
+      <cUF>${cUF}</cUF>
       <cNF>${cNF}</cNF>
       <natOp>VENDA</natOp>
       <mod>55</mod>
@@ -77,7 +79,7 @@ export function generateInfNFe(input: NFeInput): string {
       <dhEmi>${dhEmi}</dhEmi>
       <tpNF>1</tpNF>
       <idDest>1</idDest>
-      <cMunFG>2408102</cMunFG>
+      <cMunFG>${input.emitente.enderEmit.cMun}</cMunFG>
       <tpImp>1</tpImp>
       <tpEmis>${tpEmis}</tpEmis>
       <cDV>${dv}</cDV>
@@ -103,8 +105,8 @@ export function generateInfNFe(input: NFeInput): string {
         <cPais>${input.emitente.enderEmit.cPais}</cPais>
         <xPais>${input.emitente.enderEmit.xPais}</xPais>
       </enderEmit>
-      <IE>201234567</IE>
-      <CRT>4</CRT>
+      <IE>ISENTO</IE>
+      <CRT>2</CRT>
     </emit>
     <dest>
       ${documentoDest}
@@ -148,30 +150,33 @@ export function generateInfNFe(input: NFeInput): string {
     </total>
     <transp><modFrete>9</modFrete></transp>
     <pag><detPag><tPag>01</tPag><vPag>${totalProd}</vPag></detPag></pag>
+    <infAdic>
+      <infCpl>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</infCpl>
+    </infAdic>
   </infNFe>`.replace(/>\s+</g, '><').trim()
 }
 
-function calculaDV(chaveSemDV: string): string {
-  const pesos = [2, 3, 4, 5, 6, 7, 8, 9]
-  let soma = 0
-  let pesoIndex = 0
+function calcDV(keyWithoutDV: string): string {
+  const weight = [2, 3, 4, 5, 6, 7, 8, 9]
+  let sum = 0
+  let weightIndex = 0
 
-  for (let i = chaveSemDV.length - 1; i >= 0; i--) {
-    soma += Number(chaveSemDV[i]) * pesos[pesoIndex++ % 8]
+  for (let i = keyWithoutDV.length - 1; i >= 0; i--) {
+    sum += Number(keyWithoutDV[i]) * weight[weightIndex++ % 8]
   }
 
-  const resto = soma % 11
-  const dv = resto === 0 || resto === 1 ? 0 : 11 - resto
+  const rest = sum % 11
+  const dv = rest === 0 || rest === 1 ? 0 : 11 - rest
   return String(dv)
 }
 
-export function buildChaveAcesso(input: NFeInput, dhEmi: string, nNF: string, cNF: string, tpEmis: string, serie = '1', mod = '55'): string {
+export function buildAcessKey(input: NFeInput, dhEmi: string, nNF: string, cNF: string, tpEmis: string, serie = '1', mod = '55'): string {
   const cUF = ufToCUF[input.emitente.enderEmit.UF]
   const AAMM = dhEmi.slice(2, 4) + dhEmi.slice(5, 7)
   const CNPJ = input.emitente.CNPJ.padStart(14, '0')
 
   const base = `${cUF}${AAMM}${CNPJ}${mod.padStart(2, '0')}${serie.padStart(3, '0')}${nNF.padStart(9, '0')}${tpEmis}${cNF.padStart(8, '0')}`
-  const dv = calculaDV(base)
+  const dv = calcDV(base)
 
   return `NFe${base}${dv}`
 }
