@@ -7,71 +7,50 @@ const typeDefs = `
   }
 
   type Mutation {
-    enqueueNFe(input: NFeInput!): String
+    enqueueNFSe(input: NFSeInput!): String
   }
 
-  input EnderecoInput {
-    xLgr: String!
-    nro: String!
-    xBairro: String!
-    cMun: String!
-    xMun: String!
-    UF: String!
-    CEP: String!
-    cPais: String!
-    xPais: String!
+  input NFSeInput {
+    rps: RpsInput!
+    emitente: EmitenteInput!
+    servico: ServicoInput!
+    tomador: TomadorInput!
   }
 
-  input ProdutoInput {
-    cProd: String!
-    cEAN: String!
-    xProd: String!
-    NCM: String!
-    CFOP: String!
-    uCom: String!
-    qCom: String!
-    vUnCom: String!
-    vProd: String!
-    cEANTrib: String!
-    uTrib: String!
-    qTrib: String!
-    vUnTrib: String!
-    indTot: String!
-    vBC: String!
-    pICMS: String!
-    vICMS: String!
-    pPIS: String!
-    vPIS: String!
-    pCOFINS: String!
-    vCOFINS: String!
-  }
-
-  input TotalInput {
-    vBC: String!
-    vICMS: String!
-    vProd: String!
-    vNF: String!
+  input RpsInput {
+    numero: String!
+    serie: String!
+    tipo: String!
+    dataEmissao: String
   }
 
   input EmitenteInput {
-    CNPJ: String!
-    xNome: String!
-    IE: String!
-    CRT: String!
-    enderEmit: EnderecoInput!
+    cnpj: String!
+    inscricaoMunicipal: String!
   }
 
-  input DestinatarioInput {
-    CNPJ: String!
-    enderDest: EnderecoInput!
-    indIEDest: String!
+  input ServicoInput {
+    valor: Float!
+    issRetido: Int! # 1 = Sim, 2 = Não
+    aliquota: Float!
+    itemListaServico: String!
+    discriminacao: String!
+    codigoMunicipio: String!
   }
 
-  input NFeInput {
-    emitente: EmitenteInput!
-    destinatario: DestinatarioInput!
-    produtos: [ProdutoInput!]!
-    total: TotalInput!
+  input TomadorInput {
+    cnpj: String!
+    razaoSocial: String!
+    endereco: EnderecoInput!
+  }
+
+  input EnderecoInput {
+    logradouro: String!
+    numero: String!
+    bairro: String!
+    codigoMunicipio: String!
+    uf: String!
+    cep: String!
   }
 `
 

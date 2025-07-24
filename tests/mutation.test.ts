@@ -50,14 +50,14 @@ beforeEach(async () => {
   await nfeQueue.drain()
 })
 
-describe('enqueueNFe mutation', () => {
+describe('enqueueNFSe mutation', () => {
   it('returns a valid jobId', async () => {
-    const query = `mutation($cnpj: String!, $value: Float!){ enqueueNFe(cnpj:$cnpj, value:$value) }`
+    const query = `mutation($cnpj: String!, $value: Float!){ enqueueNFSe(cnpj:$cnpj, value:$value) }`
     const variables = { cnpj: '12345678000100', value: 200.5 }
     const res = await request(app).post('/graphql').send({ query, variables })
 
     expect(res.status).toBe(200)
-    const jobId = res.body.data.enqueueNFe
+    const jobId = res.body.data.enqueueNFSe
 
     expect(jobId).toBeDefined()
     const job = await nfeQueue.getJob(jobId)

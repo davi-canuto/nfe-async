@@ -23,11 +23,24 @@ public class XmlSigner {
     public Document sign(Document document) throws Exception {
         XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM");
 
-        Element infNFeElement = (Element) document.getElementsByTagName("infNFe").item(0);
-        String id = infNFeElement.getAttribute("Id");
+        Element elementToSign = null;
+        String id = null;
 
-        infNFeElement.setIdAttribute("Id", true);
+        var allElements = document.getElementsByTagName("*");
+        for (int i = 0; i < allElements.getLength(); i++) {
+        Element el = (Element) allElements.item(i);
+        if (el.hasAttribute("Id")) {
+                elementToSign = el;
+                id = el.getAttribute("Id");
+                el.setIdAttribute("Id", true);
+                break;
+        }
+        }
 
+        if (elementToSign == null || id == null || id.isEmpty()) {
+                throw new Exception("Nenhum elemento com atributo 'Id' encontrado no XML.");
+        }
+        
         Transform enveloped = factory.newTransform(Transform.ENVELOPED, (C14NMethodParameterSpec) null);
         Transform canonicalization = factory.newTransform(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
 

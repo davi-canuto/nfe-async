@@ -1,22 +1,16 @@
-import { NFeInput, UF} from "../types/nfe"
+import { NFSeInput } from "../types/nfse"
 import { connectMongo } from '../database/mongo'
 
-import { saveNFeLog } from './helpers/trackingNFe'
-import { authorizeNFe } from './authorizeNFe'
-import { getStatusService } from './getStatusService'
+import { saveNFeLog } from './helpers/trackingNFSe'
+import { createNFSe } from './createNFSe'
 
-export async function processNFe(options: NFeInput) {
+export async function processNFe(options: NFSeInput) {
   try {
     await connectMongo()
-    const insertedId = await saveNFeLog(options, 'PROCESSING')
 
-    const uf: UF = options.emitente.enderEmit.UF
+    const insertedId = await saveNFeLog(options)
 
-    const status = await getStatusService(uf)
-
-    if (status != 107) throw `Sefaz service is down for ${uf}`
-
-    const res = await authorizeNFe(options)
+    const res = await createNFSe(options)
     console.log(res)
 
     return { success: true, id: insertedId }

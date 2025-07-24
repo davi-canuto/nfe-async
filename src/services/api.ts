@@ -18,7 +18,7 @@ const agent = new https.Agent({
   rejectUnauthorized: false
 })
 
-export async function post(url: string, xml: string, soapAction: string, contentType = 'application/soap+xml; charset=utf-8') {
+export async function post(url: string, xml: string, soapAction: string, contentType = 'text/xml; charset=utf-8') {
   const response = await fetch(url, {
     method: 'POST',
     body: xml,
