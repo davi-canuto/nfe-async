@@ -27,6 +27,7 @@ const typeDefs = `
   input EmitenteInput {
     cnpj: String!
     inscricaoMunicipal: String!
+    razaoSocial: String!
   }
 
   input ServicoInput {

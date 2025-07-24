@@ -28,19 +28,19 @@ public class XmlSigner {
 
         var allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
-        Element el = (Element) allElements.item(i);
-        if (el.hasAttribute("Id")) {
+            Element el = (Element) allElements.item(i);
+            if (el.hasAttribute("Id")) {
                 elementToSign = el;
                 id = el.getAttribute("Id");
                 el.setIdAttribute("Id", true);
                 break;
-        }
+            }
         }
 
         if (elementToSign == null || id == null || id.isEmpty()) {
-                throw new Exception("Nenhum elemento com atributo 'Id' encontrado no XML.");
+            throw new Exception("Nenhum elemento com atributo 'Id' encontrado no XML.");
         }
-        
+
         Transform enveloped = factory.newTransform(Transform.ENVELOPED, (C14NMethodParameterSpec) null);
         Transform canonicalization = factory.newTransform(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
 
@@ -65,7 +65,7 @@ public class XmlSigner {
         X509Data x509Data = kif.newX509Data(List.of(certificate));
         KeyInfo keyInfo = kif.newKeyInfo(List.of(x509Data));
 
-        DOMSignContext domSignContext = new DOMSignContext(privateKey, document.getElementsByTagName("NFe").item(0));
+        DOMSignContext domSignContext = new DOMSignContext(privateKey, elementToSign);
         domSignContext.setDefaultNamespacePrefix("ds");
 
         XMLSignature signature = factory.newXMLSignature(signedInfo, keyInfo);

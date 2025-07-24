@@ -12,6 +12,7 @@ export interface NFSeInput {
   emitente: {
     cnpj: string
     inscricaoMunicipal: string
+    razaoSocial: string
   }
   servico: {
     valor: number
